@@ -5,6 +5,32 @@ package(default_visibility = ["//tensorflow:internal"])
 load("//tensorflow:tensorflow.bzl", "py_test")
 
 py_library(
+    name = "interpreter",
+    srcs = [
+        "interpreter.py",
+    ],
+    deps = [
+        "//tensorflow/contrib/lite/python/interpreter_wrapper:tensorflow_wrap_interpreter_wrapper",
+    ],
+)
+
+py_test(
+    name = "interpreter_test",
+    srcs = ["interpreter_test.py"],
+    srcs_version = "PY2AND3",
+    deps = [
+        ":interpreter",
+        "//tensorflow/python:array_ops",
+        "//tensorflow/python:client_testlib",
+        "//tensorflow/python:platform_test",
+    ],
+    data = [
+      "testdata/permute_float.tflite",
+      "testdata/permute_uint8.tflite",
+    ],
+)
+
+py_library(
     name = "lite",
     srcs = ["lite.py"],
     # data = [
