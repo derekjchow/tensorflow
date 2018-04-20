@@ -9,5 +9,6 @@ cc_library(
     hdrs = [
         "NeuralNetworksShim.h",
     ],
-    linkopts = ["-ldl"],
+    srcs = ["NeuralNetworksShim.cc"],
+    #linkopts = ["-ldl"],
 )
