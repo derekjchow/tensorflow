@@ -178,7 +178,7 @@ class Model {
   }
 
   int SetOperandValueFromMemory(uint32_t index, const Memory* memory,
-                                 uint32_t offset, size_t length) {
+                                uint32_t offset, size_t length) {
     LOG(ERROR) << __FUNCTION__ << "\n";
 
     pools_.push_back(*memory);
@@ -225,6 +225,64 @@ class Model {
 
   std::vector<Memory> pools_;
 };
+
+// TODO(derekjchow): This is actually a HAL class
+class PreparedModel {
+ public:
+  PreparedModel() = delete;
+
+  PreparedModel(Model* model)
+    : model_(model) {
+    LOG(ERROR) << __FUNCTION__ << "\n";
+  }
+
+  ~PreparedModel() {
+    LOG(ERROR) << __FUNCTION__ << "\n";
+  }
+
+  // TODO(derekjchow): This should be a virtual function.
+  // TODO(derekjchow): Finish defining me
+  void Execute(std::function<void(int error)> execution_callback);
+
+ private:
+  Model* const model_;
+};
+
+class Compilation {
+ public:
+  Compilation() = delete;
+
+  Compilation(Model* model)
+    : model_(model) {
+    LOG(ERROR) << __FUNCTION__ << "\n";
+  }
+
+  ~Compilation() {
+    LOG(ERROR) << __FUNCTION__ << "\n";
+  }
+
+  int SetPreference(int32_t preference) {
+    LOG(ERROR) << __FUNCTION__ << "\n";
+    return ANEURALNETWORKS_NO_ERROR;
+  }
+
+  int Finish() {
+    // TODO(derekjchow): We should do paritioning and call the HAL here:
+    // IDevice::getCapabilities
+    // IDevice::getSupportedOperations
+    // IDevice::prepareModel
+
+    // TODO(derekjchow): This stuff should be asynchronous too.
+
+    LOG(ERROR) << __FUNCTION__ << "\n";
+    return ANEURALNETWORKS_NO_ERROR;
+  }
+
+ private:
+  Model* const model_;
+};
+
+
 
 int ANeuralNetworksMemory_createFromFd(size_t size, int prot, int fd, size_t offset,
                                        ANeuralNetworksMemory** memory) {
@@ -322,25 +380,23 @@ int ANeuralNetworksModel_relaxComputationFloat32toFloat16(ANeuralNetworksModel* 
 
 int ANeuralNetworksCompilation_create(ANeuralNetworksModel* model,
                                       ANeuralNetworksCompilation** compilation) {
-  LOG(ERROR) << __FUNCTION__ << "\n";
-  *compilation = reinterpret_cast<ANeuralNetworksCompilation*>(new Dummy);
+  Model* m = reinterpret_cast<Model*>(model);
+  *compilation = reinterpret_cast<ANeuralNetworksCompilation*>(
+      new Compilation(m));
   return ANEURALNETWORKS_NO_ERROR;
 }
 
 void ANeuralNetworksCompilation_free(ANeuralNetworksCompilation* compilation) {
-  LOG(ERROR) << __FUNCTION__ << "\n";
-  delete reinterpret_cast<Dummy*>(compilation);
+  delete reinterpret_cast<Compilation*>(compilation);
 }
 
 int ANeuralNetworksCompilation_setPreference(ANeuralNetworksCompilation* compilation,
                                              int32_t preference) {
-  LOG(ERROR) << __FUNCTION__ << "\n";
-  return ANEURALNETWORKS_NO_ERROR;
+  return reinterpret_cast<Compilation*>(compilation)->SetPreference(preference);
 }
 
 int ANeuralNetworksCompilation_finish(ANeuralNetworksCompilation* compilation) {
-  LOG(ERROR) << __FUNCTION__ << "\n";
-  return ANEURALNETWORKS_NO_ERROR;
+  return reinterpret_cast<Compilation*>(compilation)->Finish();
 }
 
 int ANeuralNetworksExecution_create(ANeuralNetworksCompilation* compilation,
