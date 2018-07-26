@@ -1225,8 +1225,8 @@ typedef enum {
      */
     ANEURALNETWORKS_TANH = 28,
 
-// TODO: change to __ANDROID_API__ >= __ANDROID_API_P__ once available.
-#if __ANDROID_API__ > __ANDROID_API_O_MR1__
+// // TODO: change to __ANDROID_API__ >= __ANDROID_API_P__ once available.
+// #if __ANDROID_API__ > __ANDROID_API_O_MR1__
     // TODO: make the description easier to understand.
     /**
      * BatchToSpace for N-dimensional tensors.
@@ -1487,7 +1487,7 @@ typedef enum {
      * 0: A tensor of the same type as input0.
      */
     ANEURALNETWORKS_TRANSPOSE = 37,
-#endif
+// #endif
 } OperationCode;
 
 /**
