@@ -145,6 +145,10 @@ class Model {
     return small_values_;
   }
 
+  size_t NumPools() const {
+    return pools_.size();
+  }
+
  private:
   std::vector<OperandType> operands_;
   std::vector<Operation> operations_;

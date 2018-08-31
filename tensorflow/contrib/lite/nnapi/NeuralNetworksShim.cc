@@ -232,6 +232,10 @@ class Compilation {
     return ANEURALNETWORKS_NO_ERROR;
   }
 
+  proto_nnapi::NNPreparedModel* compiled_model() {
+    return compiled_model_.get();
+  }
+
  private:
   std::shared_ptr<proto_nnapi::NNPreparedModel> compiled_model_;
   Model* const model_;
@@ -284,6 +288,13 @@ class Execution {
   }
 
   Event* StartCompute() {
+    proto_nnapi::NNPreparedModel* compiled_model =
+        compilation_->compiled_model();
+    Request request;
+
+    auto callback = [](ErrorStatus e) {};
+
+    compiled_model->Execute(request, callback);
     return new Event(this);
   }
 
